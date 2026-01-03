@@ -18,7 +18,11 @@ const initialProducts = [
 ];
 
 const ProductManager = () => {
-  const [products, setProducts] = useState(initialProducts);
+  const [products, setProducts] = useState(() => {
+    const savedProducts = localStorage.getItem('products');
+    return savedProducts ? JSON.parse(savedProducts) : initialProducts;
+  });
+
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
@@ -35,6 +39,10 @@ const ProductManager = () => {
   const [formErrors, setFormErrors] = useState({});
 
   const itemsPerPage = 6;
+
+  useEffect(() => {
+    localStorage.setItem('products', JSON.stringify(products));
+  }, [products]);
 
   // Debounce search term
   useEffect(() => {
